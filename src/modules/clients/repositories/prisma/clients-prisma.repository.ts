@@ -40,9 +40,9 @@ export class ClientsPrismaRepository implements ClientsRepository {
       where: { email },
     });
 
-    return plainToInstance(Client, client);
+    return client;
   }
-  async update(id: string, data: UpdateClientDto): Promise<Client> {
+  async update(id: string, data: UpdateClientDto, _): Promise<Client> {
     const client = await this.prisma.client.update({
       where: { id },
       data: { ...data },
@@ -50,7 +50,7 @@ export class ClientsPrismaRepository implements ClientsRepository {
 
     return plainToInstance(Client, client);
   }
-  async delete(id: string): Promise<void> {
+  async delete(id: string, _): Promise<void> {
     await this.prisma.client.delete({
       where: { id },
     });

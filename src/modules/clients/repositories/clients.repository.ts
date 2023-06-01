@@ -7,6 +7,10 @@ export abstract class ClientsRepository {
   abstract findAll(): Promise<Client[]> | Client[];
   abstract findOne(id: string): Promise<Client> | Client;
   abstract findByEmail(email: string): Promise<Client> | Client;
-  abstract update(id: string, data: UpdateClientDto): Promise<Client> | Client;
-  abstract delete(id: string): Promise<void> | void;
+  abstract update(
+    id: string,
+    data: UpdateClientDto,
+    clientId: string,
+  ): Promise<Client> | Client;
+  abstract delete(id: string, clientId: string): Promise<void> | void;
 }

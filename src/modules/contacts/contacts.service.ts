@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { ContactsRepository } from './repositories/contact.repository';
@@ -7,19 +11,41 @@ import { ContactsRepository } from './repositories/contact.repository';
 export class ContactsService {
   constructor(private contactRepository: ContactsRepository) {}
 
-  async create(createContactDto: CreateContactDto) {
-    const contact = await this.contactRepository.create(createContactDto);
+  async create(createContactDto: CreateContactDto, clientId: string) {
+    const findContact = await this.contactRepository.findByEmail(
+      createContactDto.email,
+    );
+    if (findContact)
+      throw new ConflictException('Client with this email already exists!');
+
+    const contact = await this.contactRepository.create(
+      createContactDto,
+      clientId,
+    );
     return contact;
   }
 
-  async findAll() {
-    return this.contactRepository.findAll();
+  async findAll(clientId: string) {
+    const contacts = await this.contactRepository.findAll(clientId);
+
+    if (!contacts.length)
+      throw new NotFoundException('Do not have contacts yet');
+
+    return contacts;
   }
 
   async findOne(id: string) {
     const findContact = await this.contactRepository.findOne(id);
     if (!findContact) throw new NotFoundException('Contact not found');
     return findContact;
+  }
+
+  async findByEmail(email: string) {
+    const contact = await this.contactRepository.findByEmail(email);
+    if (!contact)
+      throw new ConflictException('Contact with this email already exists!');
+
+    return contact;
   }
 
   async update(id: string, updateContactDto: UpdateContactDto) {
