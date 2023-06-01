@@ -30,6 +30,14 @@ export class ContactsPrismaRepository implements ContactsRepository {
       where: {
         clientId: clientId,
       },
+      include: {
+        client: {
+          select: {
+            full_name: true,
+            email: true,
+          },
+        },
+      },
     });
     return contacts;
   }
@@ -43,7 +51,7 @@ export class ContactsPrismaRepository implements ContactsRepository {
   }
 
   async findByEmail(email: string): Promise<Contact> {
-    const contact = await this.prisma.contact.findUnique({
+    const contact = await this.prisma.contact.findFirst({
       where: { email },
     });
 
