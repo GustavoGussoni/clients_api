@@ -9,7 +9,7 @@ import { PrismaService } from 'src/database/prisma.service';
 export class ContactsPrismaRepository implements ContactsRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateContactDto): Promise<Contact> {
+  async create(data: CreateContactDto, clientId: string): Promise<Contact> {
     const contact = new Contact();
     Object.assign(contact, {
       ...data,
@@ -18,21 +18,33 @@ export class ContactsPrismaRepository implements ContactsRepository {
     const newContact = await this.prisma.contact.create({
       data: {
         ...contact,
-        clientId: contact.clientId,
+        clientId: clientId,
       },
     });
 
     return newContact;
   }
 
-  async findAll(): Promise<Contact[]> {
-    const contacts = await this.prisma.contact.findMany();
+  async findAll(clientId: string): Promise<Contact[]> {
+    const contacts = await this.prisma.contact.findMany({
+      where: {
+        clientId: clientId,
+      },
+    });
     return contacts;
   }
 
   async findOne(id: string): Promise<Contact> {
     const contact = await this.prisma.contact.findUnique({
       where: { id },
+    });
+
+    return contact;
+  }
+
+  async findByEmail(email: string): Promise<Contact> {
+    const contact = await this.prisma.contact.findUnique({
+      where: { email },
     });
 
     return contact;

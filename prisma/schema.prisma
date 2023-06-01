@@ -17,7 +17,7 @@ model Client {
   phone         String
   register_date String
   password      String
-  contacts      Contact[]
+  contact      Contact[]
 
   @@map("clients")
 }
