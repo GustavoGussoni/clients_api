@@ -28,6 +28,11 @@ export class ContactsInMemoryRepository implements ContactsRepository {
     return contact;
   }
 
+  findByEmail(email: string): Contact | Promise<Contact> {
+    const contact = this.database.find((contact) => contact.email === email);
+    return contact;
+  }
+
   update(id: string, data: UpdateContactDto): Contact | Promise<Contact> {
     const contactIndex = this.database.findIndex(
       (contact) => contact.id === id,

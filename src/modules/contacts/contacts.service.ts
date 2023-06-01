@@ -12,11 +12,14 @@ export class ContactsService {
   constructor(private contactRepository: ContactsRepository) {}
 
   async create(createContactDto: CreateContactDto, clientId: string) {
-    const findContact = await this.contactRepository.findByEmail(
-      createContactDto.email,
-    );
-    if (findContact)
-      throw new ConflictException('Client with this email already exists!');
+    if (createContactDto.email) {
+      const contactEmail: string = createContactDto.email;
+      const findContact = await this.contactRepository.findByEmail(
+        contactEmail,
+      );
+      if (findContact)
+        throw new ConflictException('Client with this email already exists!');
+    }
 
     const contact = await this.contactRepository.create(
       createContactDto,
