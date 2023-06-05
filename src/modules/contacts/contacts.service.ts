@@ -52,6 +52,14 @@ export class ContactsService {
   }
 
   async update(id: string, updateContactDto: UpdateContactDto) {
+    if (updateContactDto.email) {
+      const contactEmail: string = updateContactDto.email;
+      const findContact = await this.contactRepository.findByEmail(
+        contactEmail,
+      );
+      if (findContact)
+        throw new ConflictException('Client with this email already exists!');
+    }
     const contact = await this.contactRepository.update(id, updateContactDto);
     return contact;
   }
