@@ -28,7 +28,7 @@ model Contact {
   email         String 
   phone         String
   register_date String
-  client        Client @relation(fields: [clientId], references: [id])
+  client        Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId      String
 
   @@map("contacts")
